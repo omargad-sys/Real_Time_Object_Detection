@@ -185,29 +185,24 @@ class ObjectDetector:
 
     def _draw_info_panel(self, frame: np.ndarray, fps: float):
         """Draw information panel with FPS and detection counts."""
-        panel_height = 120
+        panel_height = 60
         panel = np.zeros((panel_height, frame.shape[1], 3), dtype=np.uint8)
         panel[:] = (40, 40, 40)
 
-        # FPS
-        cv2.putText(panel, f'FPS: {fps:.1f}', (10, 25),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        # FPS and Device on same line
+        cv2.putText(panel, f'FPS: {fps:.1f}', (10, 20),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
-        # Device
         device_text = f'Device: {self.device.upper()}'
-        cv2.putText(panel, device_text, (10, 50),
+        cv2.putText(panel, device_text, (150, 20),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-        # Detection counts
-        y_offset = 75
+        # Detection counts and controls on same line
+        y_offset = 45
         if self.detection_counts:
-            counts_text = 'Detections: ' + ', '.join([f'{k}: {v}' for k, v in sorted(self.detection_counts.items())])
+            counts_text = ', '.join([f'{k}: {v}' for k, v in sorted(self.detection_counts.items())])
             cv2.putText(panel, counts_text, (10, y_offset),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
-        # Controls
-        cv2.putText(panel, 'Controls: Q=Quit | SPACE=Pause | S=Screenshot', (10, 105),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, (200, 200, 200), 1)
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
 
         # Combine panel with frame
         return np.vstack([panel, frame])
@@ -241,7 +236,7 @@ class ObjectDetector:
 
             # Adjust for window scaling and info panel
             scaled_width = int(width * self.window_scale)
-            scaled_height = int(height * self.window_scale) + 120  # +120 for info panel
+            scaled_height = int(height * self.window_scale) + 60  # +60 for info panel
 
             self.video_writer = cv2.VideoWriter(self.output_file, fourcc, fps,
                                                (scaled_width, scaled_height))
